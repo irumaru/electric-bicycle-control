@@ -11,8 +11,9 @@ uint16_t getThrottle()
 {
   //入力
   uint16_t raw = readADC(ADC_CH_OF_THROTTLE);
+  //int raw = readADC(ADC_CH_OF_THROTTLE);
   //ディバッグ
   //Serial.printf("ThrottleRaw=%d\n", raw);
   //スロットルの特性に合わせて変換&出力
-  return map(constrain(raw, 380, 2400) , 380, 2400, 0, 4095);
+  return map(constrain(raw, 510, 2620) , 510, 2620, 0, 4095);
 }
