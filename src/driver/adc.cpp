@@ -21,7 +21,7 @@ MCP3208 adc;
 int adcBegin()
 {
     //初期化(HW SPI)
-    return adc.begin();
+    return adc.begin(5, new SPIClass(VSPI));
 }
 
 /**
@@ -32,10 +32,11 @@ int adcBegin()
 uint16_t readADC(uint8_t channel)
 {
     //読み取り
-    int value = adc.readADC(channel);
+    uint16_t value = adc.readADC(channel);
 
     //ディバッグ
-    //bt.printf("Ch=%d, Val=%d\n", channel, value);
+    //if(channel == 0)
+    //    Serial.printf("Ch=%d, Val=%d\n", channel, value);
 
     //0～4095以外の時にエラーとする
     if(value < 0 || 4095 < value)
