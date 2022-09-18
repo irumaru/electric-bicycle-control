@@ -9,5 +9,11 @@ uint16_t getCurrent()
   //ADC
   uint16_t millvolt = readADCMillivolt(ADC_CH_OF_CURRENT);
 
-  return map(constrain(millvolt, 0, 2500) , 2500, 2000, 0, 10000);
+  //Serial.printf("CurrentSensor: %dmV\n", millvolt);
+
+  uint16_t current = map(constrain(millvolt, 0, 2525) , 2525, 2475, 0, 1000);
+
+  Serial.printf("Current: %dmA\n", current);
+
+  return current;
 }
