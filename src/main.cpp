@@ -35,7 +35,7 @@ void setup() {
 
 void loop() {
   //Debug
-  Serial.printf("adcBeginStatus = %d\n", adcStatus);
+  //Serial.printf("adcBeginStatus = %d\n", adcStatus);
 
   //モニタ出力
   
@@ -44,7 +44,7 @@ void loop() {
   
   //電気的情報
   tftViewOutput(getDriveOutput());
-  tftViewCurrent(getCurrent());
+  tftViewCurrent(map(getCurrent(), 0, DRIVE_CURRENT_LIMIT, 0, 100));
   tftViewBattery(getBatteryPercent());
   
   //温度的情報
@@ -87,6 +87,9 @@ void motorController(void *arg)
   {
     //出力目標
     target = getThrottle();
+
+    //debug
+    //Serial.printf("Throttle: %d\n", target);
   
     //速度制限
     if(!getSpeedAllow())
