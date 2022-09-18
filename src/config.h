@@ -20,7 +20,7 @@
 //PWM duty比のbit数
 #define DRIVE_PWM_RESO 12
 //最大電流[mA]
-#define DRIVE_CURRENT_LIMIT 13000
+#define DRIVE_CURRENT_LIMIT 1000
 //出力停止する最大電流超過割合(リニア)[%]
 #define DRIVE_CURRENT_LIMIT_OVER 50
 //PWM Duty比が0%から100%まで変化する最短時間
