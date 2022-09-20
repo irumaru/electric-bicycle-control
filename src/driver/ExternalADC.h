@@ -24,5 +24,4 @@ class ExternalADC
         uint16_t values[8] = {0,0,0,0,0,0,0,0}; //測定値
         void loop();
         uint16_t readADC(uint8_t);
-        uint16_t readADCMillivolt(uint8_t);
 };

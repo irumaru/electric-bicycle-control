@@ -23,6 +23,7 @@ void ExternalADC::loop()
     while(true)
     {
         getCount = 0;
+
         for(uint8_t i = 0; i < 8; i ++)
         {
             if(this->periodCount != 0)
@@ -33,7 +34,12 @@ void ExternalADC::loop()
                 }
             delayMicroseconds(constrain((int)this->period - (readDelay * this->periodCount), 0, 1000000));
         }
+
         count ++;
+
+        //カウントリセット
+        if(count == 10000)
+            count = 0;
     }
 }
 
@@ -67,10 +73,4 @@ uint16_t ExternalADC::readADC(uint8_t channel)
         return 0;
 
     return value;
-}
-
-uint16_t ExternalADC::readADCMillivolt(uint8_t channel)
-{
-    //計算
-    return map(readADC(channel), 0, 4095, 0, 3300);
 }
