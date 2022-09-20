@@ -11,7 +11,7 @@ void ExternalADC::begin()
     #endif
 
     //ループ開始
-
+    xTaskCreatePinnedToCore(this->loop, "ADCLoop", 4096, NULL, 1, NULL, 1);
 }
 
 void ExternalADC::loop()
@@ -37,20 +37,20 @@ void ExternalADC::loop()
     }
 }
 
-void ExternalADC::setADC(uint8_t channel, uint16_t freq)
+void ExternalADC::setADC(uint8_t channel, uint16_t periodCount)
 {
-    //周期[us]を計算
-    int period = (((double)1 / freq) * 1000000);
-
-    //readADCの時間を引いて格納
-    this->delay[channel] = period - this->readDelay;
-
-    #if SERIAL_DEBUG
-    Serial.printf("ExternalADC::setADC() ch%d: period %d\n", channel, period);
-    #endif
+    this->periodCount[channel] = periodCount;
 }
 
+uint16_t ExternalADC::getADC(uint8_t channel)
+{
+    return this->values[channel];
+}
 
+uint16_t ExternalADC::getADCMillivolt(uint8_t channel)
+{
+    return map(this->getADC(channel), 0, 4095, 0, 3300);
+}
 
 uint16_t ExternalADC::readADC(uint8_t channel)
 {
