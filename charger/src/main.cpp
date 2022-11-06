@@ -1,9 +1,11 @@
+#include <Arduino.h>
 #include "adc_hq.c"
 
 //電圧監視
 #define VOLTAGE_PIN 32
 #define VOLTAGE_MAX 29400
 #define VOLTAGE_LOW 21000
+#define VOLTAGE_MAX_MARGIN 4 //値-5%
 //温度監視
 #define TEMP_PIN 33
 #define TEMP_MAX 60
@@ -19,6 +21,8 @@ int chargeStatus();
 
 //グローバル変数宣言
 int BatteryVolts, BatteryPercent;
+
+#define CHARGE_MAX VOLTAGE_MAX - (((VOLTAGE_MAX - VOLTAGE_LOW) / 100) * VOLTAGE_MAX_MARGIN)
 
 void setup() {
   //ピンの初期化
@@ -41,7 +45,7 @@ void loop() {
   while(true)
   {
     updateVolts();
-    Serial.printf("充電開始待ち, 電圧: %.2fmV, 容量: %d%%\n", (float)BatteryVolts/1000, BatteryPercent);
+    Serial.printf("充電開始待ち, 電圧: %.2fV, 容量: %d%%\n", (float)BatteryVolts/1000, BatteryPercent);
     if(digitalRead(SW_PIN))
     {
       break;
@@ -51,18 +55,18 @@ void loop() {
 
   //充電
   updateVolts();
-  Serial.printf("充電開始, 電圧: %.2fmV, 容量: %d%%\n", (float)BatteryVolts/1000, BatteryPercent);
+  Serial.printf("充電開始, 電圧: %.2fV, 容量: %d%%\n", (float)BatteryVolts/1000, BatteryPercent);
   while(true)
   {
     //電圧チェック
-    if((VOLTAGE_LOW <= BatteryVolts)&&(BatteryVolts <= VOLTAGE_MAX))
+    if((VOLTAGE_LOW <= BatteryVolts)&&(BatteryVolts <= CHARGE_MAX))
     {
       //充電
       chargeControl(true);
       delay(1000);
       //電圧値更新
       updateVolts();
-      Serial.printf("充電中, 電圧: %.2fmV, 容量: %d%%\n", (float)BatteryVolts/1000, BatteryPercent);
+      Serial.printf("充電中, 電圧: %.2fV, 容量: %d%%\n", (float)BatteryVolts/1000, BatteryPercent);
     }
     else
     {
@@ -73,7 +77,7 @@ void loop() {
       delay(10000);
       //電圧チェック
       updateVolts();
-      Serial.printf(" 電圧: %.2fmV, 容量: %d%%\n", (float)BatteryVolts/1000, BatteryPercent);
+      Serial.printf(" 電圧: %.2fV, 容量: %d%%\n", (float)BatteryVolts/1000, BatteryPercent);
       break;
     }
   }
@@ -92,7 +96,7 @@ void updateVolts()
 //充電コントロール
 void chargeControl(bool Set)
 {
-  digitalWrite(POWER_PIN, !Set);
+  digitalWrite(POWER_PIN, Set);
 }
 int chargeStatus()
 {
